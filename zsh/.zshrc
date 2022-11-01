@@ -21,7 +21,7 @@ setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history
 # unsetopt HIST_SAVE_NO_DUPS       # Write a duplicate event to the history file
 
 # Alias
-source ./aliases
+source $HOME/aliases
 
 # Completion
 _comp_options+=(globdots) # With hidden files

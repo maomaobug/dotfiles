@@ -12,6 +12,31 @@ local function on_attach(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   require('settings.keymaps').lsp_attached_only(client, bufnr)
+
+  if client.server_capabilities.documentHighlightProvider then
+    vim.cmd [[
+    hi! LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+    hi! LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+    hi! LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+  ]]
+    vim.api.nvim_create_augroup('lsp_document_highlight', {
+      clear = false
+    })
+    vim.api.nvim_clear_autocmds({
+      buffer = bufnr,
+      group = 'lsp_document_highlight',
+    })
+    vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+      group = 'lsp_document_highlight',
+      buffer = bufnr,
+      callback = vim.lsp.buf.document_highlight,
+    })
+    vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+      group = 'lsp_document_highlight',
+      buffer = bufnr,
+      callback = vim.lsp.buf.clear_references,
+    })
+  end
   lsp_status.on_attach(client)
 end
 
@@ -20,6 +45,7 @@ local servers_using_default_conf = {
   'gopls', -- Gopls: https://github.com/golang/tools/blob/master/gopls/doc/vim.md
   'graphql', -- Graphql: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#graphql
   'tsserver', -- https://github.com/theia-ide/typescript-language-server
+  'yamlls', -- https://github.com/redhat-developer/yaml-language-server
 }
 local lspconfig = require('lspconfig')
 for _, s in ipairs(servers_using_default_conf) do

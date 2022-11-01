@@ -59,4 +59,17 @@ end
 require('settings.cmds').setup()
 require('settings.keymaps').setup_global()
 require('settings.keymaps').setup_dap()
+require('settings.diag')
 require('settings.lsp')
+
+local autoreadonly = vim.api.nvim_create_augroup("autoreadonly", { clear = true })
+vim.api.nvim_create_autocmd({ "BufRead" }, {
+  group = autoreadonly,
+  pattern = {
+    vim.env.HOME.."/go/*",
+    "/opt/homebrew/Cellar/go/*"
+  },
+  callback = function(arg)
+    vim.bo.modifiable = false
+  end
+})

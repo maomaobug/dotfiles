@@ -107,6 +107,7 @@ local function init()
     ft = { "markdown" }
   }
 
+  use 'buoto/gotests-vim'
 end
 
 local plugins = setmetatable({}, {
